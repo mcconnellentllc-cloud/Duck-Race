@@ -13,7 +13,7 @@ export default function Home() {
               <span className="text-carhartt-300">Memorial Scholarship</span>
             </h1>
             <p className="text-xl text-carhartt-200 mb-6 italic">
-              "Strength and courage to face the world."
+              &quot;Strength and courage to face the world.&quot;
             </p>
             <p className="text-wrangler-100 max-w-2xl mx-auto mb-8">
               Honoring two men who embodied service, hard work, and unwavering dedication
@@ -180,7 +180,7 @@ export default function Home() {
                     More than anything, Jason was known as someone you could count on. Whether
                     you needed help with a broken-down tractor, a hand during harvest, or just
                     someone to talk to, Jason was always just a call away. He never asked for
-                    recognition or reward—he helped because that's who he was.
+                    recognition or reward—he helped because that&apos;s who he was.
                   </p>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-wrangler-800 mb-2">The South Platte</h3>
                   <p className="text-gray-700">
                     Jason loved floating the South Platte when the water ran high. Those peaceful
-                    moments on the river—that's where we'll race the ducks in his memory.
+                    moments on the river—that&apos;s where we&apos;ll race the ducks in his memory.
                   </p>
                 </div>
               </div>
@@ -246,8 +246,8 @@ export default function Home() {
                   <p className="text-gray-700">
                     Cameron was a true jack-of-all-trades who could master any project. With a
                     degree in diesel mechanics from WyoTech, his expertise spanned mechanics,
-                    plumbing, and electrical work. At just 12 years old, he rewired his family's
-                    shop, confident he could do it better—and he was right.
+                    plumbing, and electrical work. At just 12 years old, he rewired his family&apos;s
+                    shop—confident he could do it better—and he was right.
                   </p>
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function Home() {
                     Cameron dedicated himself to building up those around him. He served as a
                     hunter safety instructor, led 4-H and Fairboard programs, volunteered with
                     the local ambulance service, and worked on town and county infrastructure.
-                    When a fire devastated his parents' home, Cameron rebuilt it himself.
+                    When a fire devastated his parents&apos; home, Cameron rebuilt it himself.
                   </p>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function Home() {
 
           <div className="mt-12 text-center">
             <p className="text-xl text-wrangler-800 font-semibold italic">
-              "Strength and courage to face the world."
+              &quot;Strength and courage to face the world.&quot;
             </p>
             <p className="text-carhartt-600 mt-2">
               — The guiding principle of the Toyne-Britton Memorial Scholarship

@@ -32,7 +32,7 @@ export default function Footer() {
             In loving memory of Jason Toyne (1982-2025) and Cameron Britton (1987-2024)
           </p>
           <p className="text-xs text-carhartt-400 mt-2 italic">
-            "Strength and courage to face the world."
+            &quot;Strength and courage to face the world.&quot;
           </p>
         </div>
       </div>
