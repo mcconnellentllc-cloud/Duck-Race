@@ -53,6 +53,7 @@ export default function RootLayout({
             <div className="flex justify-center gap-6 mt-4 text-sm opacity-70">
               <Link href="/jason" className="hover:text-[var(--secondary)]">Jason&apos;s Story</Link>
               <Link href="/cameron" className="hover:text-[var(--secondary)]">Cameron&apos;s Story</Link>
+              <Link href="/legal" className="hover:text-[var(--secondary)]">Legal</Link>
               <Link href="/admin" className="hover:text-[var(--secondary)]">Admin</Link>
             </div>
           </div>
