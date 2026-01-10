@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     await dbConnect();
     const body = await request.json();
 
-    const { buyerName, phone, email, address, numDucks, paymentMethod, notes } = body;
+    const { buyerName, phone, email, address, numDucks, paymentMethod, notes, tierPrice } = body;
 
     if (!buyerName || !phone || !email || !address || !numDucks || !paymentMethod) {
       return NextResponse.json(
@@ -57,7 +57,8 @@ export async function POST(request: NextRequest) {
       duckNumbers.push(nextDuckNumber + i);
     }
 
-    const amountPaid = numDucks * 100;
+    // Use tierPrice if provided, otherwise calculate based on duck count
+    const amountPaid = tierPrice || numDucks * 25;
 
     const purchase = new Purchase({
       buyerName,

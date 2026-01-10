@@ -33,175 +33,179 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const winnerPot = stats.totalAmount / 2;
-  const scholarshipPot = stats.totalAmount / 2;
-
   return (
-    <div className="space-y-12">
+    <div>
       {/* Hero Section */}
-      <section className="text-center py-8">
-        <h1 className="text-4xl font-bold text-[var(--primary)] mb-4">
-          Cameron Britton &amp; Jason Toyne Memorial Duck Race
-        </h1>
-        <p className="text-xl text-[var(--muted)] max-w-2xl mx-auto">
-          Community involvement and being there when needed
-        </p>
+      <section className="bg-[var(--primary)] text-white py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Britton-Toyne Memorial
+            <span className="block text-[var(--secondary)]">Duck Race</span>
+          </h1>
+          <p className="text-xl md:text-2xl opacity-90 mb-8">
+            Community involvement and being there when needed
+          </p>
+          <Link href="/buy" className="inline-block bg-[var(--secondary)] hover:bg-[var(--secondary-light)] text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg">
+            Buy Your Ducks
+          </Link>
+        </div>
       </section>
 
-      {/* Live Pot Tracker */}
-      <section className="card bg-gradient-to-r from-[var(--primary)] to-[#a0522d] text-white">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-6 flex items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-            Live Race Tracker
-          </h2>
-          {loading ? (
-            <div className="animate-pulse">Loading...</div>
-          ) : (
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white/10 rounded-lg p-4">
-                <div className="text-4xl font-bold">{stats.totalDucks}</div>
-                <div className="text-[var(--secondary)]">Ducks Sold</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-4">
-                <div className="text-4xl font-bold text-green-300">${winnerPot.toLocaleString()}</div>
-                <div className="text-[var(--secondary)]">Winner&apos;s Pot</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-4">
-                <div className="text-4xl font-bold text-[var(--accent-light)]">${scholarshipPot.toLocaleString()}</div>
-                <div className="text-[var(--secondary)]">Scholarship Fund</div>
-              </div>
-            </div>
-          )}
-          <div className="mt-6">
-            <Link href="/buy" className="inline-block bg-[var(--accent)] hover:bg-[var(--accent-light)] text-white font-bold py-3 px-8 rounded-lg transition-colors text-lg">
-              Buy Your Ducks - $100 Each
-            </Link>
+      {/* Total Pot Tracker */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] rounded-2xl p-8 text-white text-center">
+            <h2 className="text-2xl font-bold mb-2">Current Pot</h2>
+            {loading ? (
+              <div className="text-5xl font-bold animate-pulse">Loading...</div>
+            ) : (
+              <>
+                <div className="text-5xl md:text-6xl font-bold text-[var(--secondary)]">
+                  ${stats.totalAmount.toLocaleString()}
+                </div>
+                <p className="mt-2 opacity-80">
+                  {stats.totalDucks} ducks from {stats.totalPurchases} supporters
+                </p>
+                <p className="mt-4 text-sm opacity-70">
+                  30-50% goes to winner (based on tier) &bull; Rest funds scholarships
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      {/* About Jason */}
-      <section className="grid md:grid-cols-2 gap-8">
-        <div className="card">
-          <h2 className="text-2xl font-bold text-[var(--primary)] mb-4 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-            Remembering Jason Toyne
+      {/* About the Scholarship */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--primary)] mb-8">
+            About the Scholarship
           </h2>
-          <p className="text-lg mb-4">
-            <strong>1982 - 2025</strong>
-          </p>
-          <p className="mb-4">
-            Jason Toyne was a Sedgwick County farmer who dedicated his life to serving his community.
-            For 25 years, he served as a volunteer fire chief, always answering the call when
-            his neighbors needed him.
-          </p>
-          <p className="mb-4">
-            Known for his unwavering willingness to help anyone who called, Jason embodied
-            the spirit of community involvement. Whether it was fighting fires, helping a neighbor
-            with their farm, or lending a hand wherever needed, Jason was always there.
-          </p>
-          <p className="text-[var(--muted)]">
-            Jason passed away on March 9, 2025, leaving behind his beloved wife Jan and
-            their children Jennifer and Flynt. His legacy of community service continues through
-            this memorial scholarship.
-          </p>
-        </div>
-
-        <div className="card">
-          <h2 className="text-2xl font-bold text-[var(--primary)] mb-4 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
-            </svg>
-            The Scholarship
-          </h2>
-          <p className="mb-4">
-            The Cameron Britton and Jason Toyne Memorial Scholarship honors their spirit of
-            <strong className="text-[var(--accent)]"> community involvement and being there when needed</strong>.
-          </p>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[var(--accent)] mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-              </svg>
-              <span><strong>College Education:</strong> Support for pursuing higher education</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[var(--accent)] mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-              </svg>
-              <span><strong>Trade School Tools:</strong> Equipment for vocational training</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[var(--accent)] mt-1 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-              </svg>
-              <span><strong>Community Service Awards:</strong> Recognition for those who serve others</span>
+          <div className="card">
+            <p className="text-lg leading-relaxed mb-6">
+              The Britton-Toyne Memorial Scholarship honors two men who embodied the true spirit of
+              community service. Both Cameron Britton and Jason Toyne dedicated their lives to helping
+              others, always being there when their neighbors needed them most.
+            </p>
+            <p className="text-lg leading-relaxed mb-6">
+              This scholarship supports young people who demonstrate the same commitment to their
+              communities - whether through volunteer work, helping neighbors, or simply being there
+              when someone needs a hand.
+            </p>
+            <div className="grid md:grid-cols-2 gap-4 mt-8">
+              <Link href="/jason" className="card hover:border-[var(--secondary)] transition-colors">
+                <h3 className="font-bold text-lg text-[var(--primary)] mb-2">Jason Toyne</h3>
+                <p className="text-[var(--muted)] text-sm">1982 - 2025</p>
+                <p className="mt-2">25-year volunteer fire chief, Sedgwick County farmer</p>
+                <span className="text-[var(--secondary)] text-sm mt-2 inline-block">Read his story →</span>
+              </Link>
+              <Link href="/cameron" className="card hover:border-[var(--secondary)] transition-colors">
+                <h3 className="font-bold text-lg text-[var(--primary)] mb-2">Cameron Britton</h3>
+                <p className="text-[var(--muted)] text-sm">Community Leader</p>
+                <p className="mt-2">A life dedicated to service and helping others</p>
+                <span className="text-[var(--secondary)] text-sm mt-2 inline-block">Read his story →</span>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="card">
-        <h2 className="text-2xl font-bold text-[var(--primary)] mb-6 text-center flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
-          </svg>
-          How the Duck Race Works
-        </h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-              1
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-[var(--primary)] mb-8">
+            How the Duck Race Works
+          </h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                1
+              </div>
+              <h3 className="font-bold mb-2">Choose Your Tier</h3>
+              <p className="text-[var(--muted)] text-sm">
+                Pick from 4 donation levels, each with more ducks and better odds
+              </p>
             </div>
-            <h3 className="font-bold mb-2">Buy Your Ducks</h3>
-            <p className="text-[var(--muted)]">
-              Purchase rubber ducks at $100 each. Each duck is assigned a unique number.
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-              2
+            <div className="text-center">
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                2
+              </div>
+              <h3 className="font-bold mb-2">Get Your Numbers</h3>
+              <p className="text-[var(--muted)] text-sm">
+                Receive unique duck numbers for each duck you sponsor
+              </p>
             </div>
-            <h3 className="font-bold mb-2">Race Day</h3>
-            <p className="text-[var(--muted)]">
-              All ducks are released into the water and race to the finish line!
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-              3
+            <div className="text-center">
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                3
+              </div>
+              <h3 className="font-bold mb-2">Race Day</h3>
+              <p className="text-[var(--muted)] text-sm">
+                All ducks race down the water to the finish line
+              </p>
             </div>
-            <h3 className="font-bold mb-2">50/50 Split</h3>
-            <p className="text-[var(--muted)]">
-              The winning duck&apos;s owner gets half the pot. The other half funds scholarships.
-            </p>
+            <div className="text-center">
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                4
+              </div>
+              <h3 className="font-bold mb-2">Win Big</h3>
+              <p className="text-[var(--muted)] text-sm">
+                Winner takes 50% of the pot, 50% funds scholarships
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="text-center mt-8">
-          <Link href="/buy" className="btn-accent inline-block">
-            Get Your Ducks Now
-          </Link>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="text-center py-8 border-t border-[var(--border)]">
-        <h2 className="text-2xl font-bold text-[var(--primary)] mb-4">
-          Honor Their Legacy
-        </h2>
-        <p className="text-[var(--muted)] max-w-xl mx-auto mb-6">
-          Every duck you purchase helps support young people who embody the spirit
-          of community involvement - being there when others need them most.
-        </p>
-        <Link href="/buy" className="btn-primary inline-block">
-          Support the Scholarship Fund
-        </Link>
+      {/* Race Details */}
+      <section className="py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="card bg-[var(--secondary)] text-white">
+            <h2 className="text-2xl font-bold mb-6 text-center">Race Details</h2>
+            <div className="grid md:grid-cols-3 gap-6 text-center mb-6">
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
+                </svg>
+                <p className="font-bold text-lg">April 25</p>
+                <p className="text-sm opacity-80">Mark your calendar!</p>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                </svg>
+                <p className="font-bold text-lg">2:00 PM</p>
+                <p className="text-sm opacity-80">Duck Race Start</p>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                <p className="font-bold text-lg">The Bar</p>
+                <p className="text-sm opacity-80">After party!</p>
+              </div>
+            </div>
+            <div className="text-center border-t border-white/20 pt-4">
+              <p className="text-lg font-semibold">Float the river before the race!</p>
+              <p className="text-sm opacity-80">Join us for a river float leading up to the big event</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-12 px-6 bg-white">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-[var(--primary)] mb-4">
+            Ready to Make a Difference?
+          </h2>
+          <p className="text-[var(--muted)] mb-8">
+            Every duck you sponsor helps fund scholarships for young people committed to community service.
+          </p>
+          <Link href="/buy" className="btn-accent inline-block text-lg px-8 py-4">
+            Buy Your Ducks Now
+          </Link>
+        </div>
       </section>
     </div>
   );
