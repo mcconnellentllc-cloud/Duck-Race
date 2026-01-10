@@ -181,17 +181,21 @@ export default function BuyPage() {
       {/* 4 Pots Display */}
       <section className="py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center text-[var(--primary)] mb-6">Current Pots</h2>
+          <h2 className="text-2xl font-bold text-center text-[var(--primary)] mb-2">What You Can Win!</h2>
+          <p className="text-center text-[var(--muted)] mb-6">Pick a race below - each has its own pot and winner</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {TIERS.map(tier => {
               const pot = stats?.pots?.[tier.price] || { ducks: 0, winnerPot: 0 };
               return (
-                <div key={tier.price} className={`${tier.color} text-white rounded-lg p-4 text-center`}>
-                  <div className="text-2xl font-bold">${tier.price}</div>
-                  <div className="text-sm opacity-80 mb-2">Race</div>
-                  <div className="text-3xl font-bold">${pot.winnerPot}</div>
-                  <div className="text-xs opacity-80">Winner takes {tier.payout}%</div>
-                  <div className="text-sm mt-2">{pot.ducks} ducks</div>
+                <div key={tier.price} className={`${tier.color} text-white rounded-xl p-4 text-center shadow-lg`}>
+                  <div className="text-lg font-bold">${tier.price} RACE</div>
+                  <div className="text-xs opacity-80 mb-2">Entry: ${tier.price}/duck</div>
+                  <div className="bg-white/20 rounded-lg py-2 px-2 mb-2">
+                    <div className="text-xs uppercase tracking-wide opacity-90">Win Up To</div>
+                    <div className="text-3xl font-bold">${pot.winnerPot}</div>
+                  </div>
+                  <div className="text-sm">{pot.ducks} ducks entered</div>
+                  <div className="text-xs opacity-70">{tier.payout}% to winner</div>
                 </div>
               );
             })}

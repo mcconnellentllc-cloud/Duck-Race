@@ -69,7 +69,8 @@ export default function Home() {
       {/* 4 Pot Trackers */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-center text-[var(--primary)] mb-6">Current Pots - 4 Winners!</h2>
+          <h2 className="text-2xl font-bold text-center text-[var(--primary)] mb-2">4 Races - 4 Winners!</h2>
+          <p className="text-center text-[var(--muted)] mb-6">Each race has its own pot - enter and win!</p>
           {loading ? (
             <div className="text-center text-[var(--muted)]">Loading...</div>
           ) : (
@@ -77,18 +78,22 @@ export default function Home() {
               {TIERS.map(tier => {
                 const pot = stats?.pots?.[tier.price] || { ducks: 0, winnerPot: 0 };
                 return (
-                  <div key={tier.price} className={`${tier.color} text-white rounded-xl p-5 text-center`}>
-                    <div className="text-xl font-bold mb-1">${tier.price} Race</div>
-                    <div className="text-4xl font-bold my-2">${pot.winnerPot}</div>
-                    <div className="text-sm opacity-80">Winner takes {tier.payout}%</div>
-                    <div className="text-sm mt-2 opacity-90">{pot.ducks} ducks entered</div>
+                  <div key={tier.price} className={`${tier.color} text-white rounded-xl p-5 text-center shadow-lg`}>
+                    <div className="text-lg font-bold mb-1">${tier.price} RACE</div>
+                    <div className="text-xs opacity-80 mb-2">Entry: ${tier.price} per duck</div>
+                    <div className="bg-white/20 rounded-lg py-3 px-2 mb-2">
+                      <div className="text-xs uppercase tracking-wide opacity-90">Win Up To</div>
+                      <div className="text-4xl font-bold">${pot.winnerPot}</div>
+                    </div>
+                    <div className="text-sm opacity-90">{pot.ducks} ducks entered</div>
+                    <div className="text-xs mt-1 opacity-70">{tier.payout}% of pot to winner</div>
                   </div>
                 );
               })}
             </div>
           )}
           <p className="text-center text-[var(--muted)] mt-4 text-sm">
-            Rest of each pot funds the Britton-Toyne Memorial Scholarship
+            Remaining funds support the Britton-Toyne Memorial Scholarship
           </p>
         </div>
       </section>
