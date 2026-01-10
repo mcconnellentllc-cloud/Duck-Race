@@ -3,14 +3,29 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+interface PotStats {
+  ducks: number;
+  total: number;
+  winnerPot: number;
+  scholarshipPot: number;
+}
+
 interface Stats {
   totalDucks: number;
   totalAmount: number;
   totalPurchases: number;
+  pots: Record<number, PotStats>;
 }
 
+const TIERS = [
+  { price: 10, payout: 30, color: 'bg-amber-600' },
+  { price: 25, payout: 35, color: 'bg-emerald-600' },
+  { price: 50, payout: 40, color: 'bg-blue-600' },
+  { price: 100, payout: 50, color: 'bg-purple-600' },
+];
+
 export default function Home() {
-  const [stats, setStats] = useState<Stats>({ totalDucks: 0, totalAmount: 0, totalPurchases: 0 });
+  const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,7 +58,7 @@ export default function Home() {
             <span className="block text-[var(--secondary)]">Duck Race</span>
           </h1>
           <p className="text-xl md:text-2xl opacity-90 mb-8">
-            Community involvement and being there when needed
+            4 Races &bull; 4 Pots &bull; 4 Winners
           </p>
           <Link href="/buy" className="inline-block bg-[var(--secondary)] hover:bg-[var(--secondary-light)] text-white font-bold py-4 px-8 rounded-lg transition-colors text-lg">
             Buy Your Ducks
@@ -51,27 +66,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Total Pot Tracker */}
+      {/* 4 Pot Trackers */}
       <section className="py-12 px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] rounded-2xl p-8 text-white text-center">
-            <h2 className="text-2xl font-bold mb-2">Current Pot</h2>
-            {loading ? (
-              <div className="text-5xl font-bold animate-pulse">Loading...</div>
-            ) : (
-              <>
-                <div className="text-5xl md:text-6xl font-bold text-[var(--secondary)]">
-                  ${stats.totalAmount.toLocaleString()}
-                </div>
-                <p className="mt-2 opacity-80">
-                  {stats.totalDucks} ducks from {stats.totalPurchases} supporters
-                </p>
-                <p className="mt-4 text-sm opacity-70">
-                  30-50% goes to winner (based on tier) &bull; Rest funds scholarships
-                </p>
-              </>
-            )}
-          </div>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl font-bold text-center text-[var(--primary)] mb-2">4 Races - 4 Winners!</h2>
+          <p className="text-center text-[var(--muted)] mb-6">Each race has its own pot - enter and win!</p>
+          {loading ? (
+            <div className="text-center text-[var(--muted)]">Loading...</div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {TIERS.map(tier => {
+                const pot = stats?.pots?.[tier.price] || { ducks: 0, winnerPot: 0 };
+                return (
+                  <div key={tier.price} className={`${tier.color} text-white rounded-xl p-5 text-center shadow-lg`}>
+                    <div className="text-lg font-bold mb-1">${tier.price} RACE</div>
+                    <div className="text-xs opacity-80 mb-2">Entry: ${tier.price} per duck</div>
+                    <div className="bg-white/20 rounded-lg py-3 px-2 mb-2">
+                      <div className="text-xs uppercase tracking-wide opacity-90">Win Up To</div>
+                      <div className="text-4xl font-bold">${pot.winnerPot}</div>
+                    </div>
+                    <div className="text-sm opacity-90">{pot.ducks} ducks entered</div>
+                    <div className="text-xs mt-1 opacity-70">{tier.payout}% of pot to winner</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <p className="text-center text-[var(--muted)] mt-4 text-sm">
+            Remaining funds support the Britton-Toyne Memorial Scholarship
+          </p>
         </div>
       </section>
 
@@ -101,7 +124,7 @@ export default function Home() {
               </Link>
               <Link href="/cameron" className="card hover:border-[var(--secondary)] transition-colors">
                 <h3 className="font-bold text-lg text-[var(--primary)] mb-2">Cameron Britton</h3>
-                <p className="text-[var(--muted)] text-sm">Community Leader</p>
+                <p className="text-[var(--muted)] text-sm">United States Marine</p>
                 <p className="mt-2">A life dedicated to service and helping others</p>
                 <span className="text-[var(--secondary)] text-sm mt-2 inline-block">Read his story →</span>
               </Link>
@@ -118,40 +141,24 @@ export default function Home() {
           </h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                1
-              </div>
-              <h3 className="font-bold mb-2">Choose Your Tier</h3>
-              <p className="text-[var(--muted)] text-sm">
-                Pick from 4 donation levels, each with more ducks and better odds
-              </p>
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+              <h3 className="font-bold mb-2">Pick Your Race</h3>
+              <p className="text-[var(--muted)] text-sm">Choose $10, $25, $50, or $100 race - each has its own pot and winner</p>
             </div>
             <div className="text-center">
-              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                2
-              </div>
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
               <h3 className="font-bold mb-2">Get Your Numbers</h3>
-              <p className="text-[var(--muted)] text-sm">
-                Receive unique duck numbers for each duck you sponsor
-              </p>
+              <p className="text-[var(--muted)] text-sm">Receive unique duck numbers for your chosen race</p>
             </div>
             <div className="text-center">
-              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                3
-              </div>
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
               <h3 className="font-bold mb-2">Race Day</h3>
-              <p className="text-[var(--muted)] text-sm">
-                All ducks race down the water to the finish line
-              </p>
+              <p className="text-[var(--muted)] text-sm">4 separate races, 4 separate pots, 4 winners!</p>
             </div>
             <div className="text-center">
-              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                4
-              </div>
+              <div className="bg-[var(--primary)] text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
               <h3 className="font-bold mb-2">Win Big</h3>
-              <p className="text-[var(--muted)] text-sm">
-                Winner takes 50% of the pot, 50% funds scholarships
-              </p>
+              <p className="text-[var(--muted)] text-sm">Winners take 30-50% of their pot based on race tier</p>
             </div>
           </div>
         </div>
@@ -175,7 +182,7 @@ export default function Home() {
                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                 </svg>
                 <p className="font-bold text-lg">2:00 PM</p>
-                <p className="text-sm opacity-80">Duck Race Start</p>
+                <p className="text-sm opacity-80">Duck Races Start</p>
               </div>
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
@@ -196,15 +203,11 @@ export default function Home() {
       {/* CTA */}
       <section className="py-12 px-6 bg-white">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-[var(--primary)] mb-4">
-            Ready to Make a Difference?
-          </h2>
+          <h2 className="text-3xl font-bold text-[var(--primary)] mb-4">Ready to Make a Difference?</h2>
           <p className="text-[var(--muted)] mb-8">
             Every duck you sponsor helps fund scholarships for young people committed to community service.
           </p>
-          <Link href="/buy" className="btn-accent inline-block text-lg px-8 py-4">
-            Buy Your Ducks Now
-          </Link>
+          <Link href="/buy" className="btn-accent inline-block text-lg px-8 py-4">Buy Your Ducks Now</Link>
         </div>
       </section>
     </div>
