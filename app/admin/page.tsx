@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Purchase {
   _id: string;
@@ -23,15 +24,39 @@ interface Stats {
 }
 
 export default function AdminPage() {
+  const router = useRouter();
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [stats, setStats] = useState<Stats>({ totalDucks: 0, totalAmount: 0, totalPurchases: 0 });
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [adminUser, setAdminUser] = useState('');
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchData();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/verify');
+      if (!res.ok) {
+        router.push('/admin/login');
+        return;
+      }
+      const data = await res.json();
+      setAuthenticated(true);
+      setAdminUser(data.user?.username || '');
+      fetchData();
+    } catch {
+      router.push('/admin/login');
+    }
+  };
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/admin/login');
+  };
 
   const fetchData = async () => {
     try {
@@ -100,7 +125,7 @@ export default function AdminPage() {
   const winnerPot = stats.totalAmount / 2;
   const scholarshipPot = stats.totalAmount / 2;
 
-  if (loading) {
+  if (loading || !authenticated) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-[var(--muted)]">Loading...</div>
@@ -111,7 +136,10 @@ export default function AdminPage() {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center no-print">
-        <h1 className="text-3xl font-bold text-[var(--primary)]">Admin Dashboard</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-[var(--primary)]">Admin Dashboard</h1>
+          <p className="text-sm text-[var(--muted)]">Welcome, {adminUser}</p>
+        </div>
         <div className="flex gap-3">
           <button
             onClick={fetchData}
@@ -124,12 +152,21 @@ export default function AdminPage() {
           </button>
           <button
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[#6b3410] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-light)] transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
             </svg>
             Export CSV
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+            Logout
           </button>
         </div>
       </div>
