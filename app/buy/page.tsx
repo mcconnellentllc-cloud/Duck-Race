@@ -14,14 +14,15 @@ interface Tier {
   ducks: number;
   price: number;
   pricePerDuck: number;
+  payout: number;
   popular?: boolean;
 }
 
 const TIERS: Tier[] = [
-  { id: 1, name: 'Supporter', ducks: 1, price: 25, pricePerDuck: 25 },
-  { id: 2, name: 'Enthusiast', ducks: 5, price: 100, pricePerDuck: 20, popular: true },
-  { id: 3, name: 'Champion', ducks: 12, price: 200, pricePerDuck: 16.67 },
-  { id: 4, name: 'Grand Sponsor', ducks: 25, price: 350, pricePerDuck: 14 },
+  { id: 1, name: 'Bronze', ducks: 1, price: 10, pricePerDuck: 10, payout: 30 },
+  { id: 2, name: 'Silver', ducks: 3, price: 25, pricePerDuck: 8.33, payout: 35 },
+  { id: 3, name: 'Gold', ducks: 6, price: 50, pricePerDuck: 8.33, payout: 40, popular: true },
+  { id: 4, name: 'Platinum', ducks: 12, price: 100, pricePerDuck: 8.33, payout: 50 },
 ];
 
 export default function BuyPage() {
@@ -179,7 +180,7 @@ export default function BuyPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl font-bold mb-2">Buy Your Ducks</h1>
           <p className="text-lg opacity-90">
-            50% goes to the winner &bull; 50% funds scholarships
+            Higher tiers = higher winner payouts (30% to 50%)
           </p>
           <div className="mt-4 bg-white/10 rounded-lg inline-block px-6 py-3">
             <span className="text-sm opacity-80">Current Pot: </span>
@@ -213,11 +214,11 @@ export default function BuyPage() {
                 <div className="text-4xl font-bold text-[var(--secondary)] mb-2">
                   ${tier.price}
                 </div>
-                <div className="text-[var(--muted)] mb-4">
+                <div className="text-[var(--muted)] mb-2">
                   {tier.ducks} duck{tier.ducks > 1 ? 's' : ''}
                 </div>
-                <div className="text-sm text-[var(--muted)]">
-                  ${tier.pricePerDuck.toFixed(0)}/duck
+                <div className="text-sm font-semibold text-[var(--primary)] bg-[var(--background)] rounded-full px-3 py-1">
+                  {tier.payout}% Winner Payout
                 </div>
                 {selectedTier?.id === tier.id && (
                   <div className="absolute top-2 right-2 text-[var(--secondary)]">
@@ -408,14 +409,17 @@ export default function BuyPage() {
             </div>
 
             <div className="card bg-[var(--secondary)] text-white">
-              <h3 className="font-bold text-lg mb-4">50/50 Split</h3>
+              <h3 className="font-bold text-lg mb-4">Tiered Payouts</h3>
               <p className="mb-4">
-                Half of all proceeds go to the winning duck owner.
-                The other half funds the Britton-Toyne Memorial Scholarship.
+                The higher your tier, the bigger your potential payout if your duck wins!
+                The rest funds the Britton-Toyne Memorial Scholarship.
               </p>
-              <p className="text-sm opacity-90">
-                Your purchase supports scholarships for young people committed to community service.
-              </p>
+              <ul className="text-sm space-y-1">
+                <li>Bronze ($10): 30% to winner</li>
+                <li>Silver ($25): 35% to winner</li>
+                <li>Gold ($50): 40% to winner</li>
+                <li>Platinum ($100): 50% to winner</li>
+              </ul>
             </div>
           </div>
         </div>
