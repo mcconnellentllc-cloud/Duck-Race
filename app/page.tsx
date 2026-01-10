@@ -67,7 +67,7 @@ export default function Home() {
                   {stats.totalDucks} ducks from {stats.totalPurchases} supporters
                 </p>
                 <p className="mt-4 text-sm opacity-70">
-                  50% goes to the winner &bull; 50% funds scholarships
+                  30-50% goes to winner (based on tier) &bull; Rest funds scholarships
                 </p>
               </>
             )}
@@ -162,28 +162,32 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="card bg-[var(--secondary)] text-white">
             <h2 className="text-2xl font-bold mb-6 text-center">Race Details</h2>
-            <div className="grid md:grid-cols-3 gap-6 text-center">
+            <div className="grid md:grid-cols-3 gap-6 text-center mb-6">
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/>
                 </svg>
-                <p className="font-bold text-lg">Date TBD</p>
-                <p className="text-sm opacity-80">Check back soon!</p>
+                <p className="font-bold text-lg">April 25</p>
+                <p className="text-sm opacity-80">Mark your calendar!</p>
               </div>
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
                 </svg>
-                <p className="font-bold text-lg">Time TBD</p>
-                <p className="text-sm opacity-80">Stay tuned!</p>
+                <p className="font-bold text-lg">2:00 PM</p>
+                <p className="text-sm opacity-80">Duck Race Start</p>
               </div>
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                <p className="font-bold text-lg">Location TBD</p>
-                <p className="text-sm opacity-80">Coming soon!</p>
+                <p className="font-bold text-lg">The Bar</p>
+                <p className="text-sm opacity-80">After party!</p>
               </div>
+            </div>
+            <div className="text-center border-t border-white/20 pt-4">
+              <p className="text-lg font-semibold">Float the river before the race!</p>
+              <p className="text-sm opacity-80">Join us for a river float leading up to the big event</p>
             </div>
           </div>
         </div>
