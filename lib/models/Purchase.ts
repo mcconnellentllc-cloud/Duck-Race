@@ -5,6 +5,7 @@ export interface IPurchase extends Document {
   phone: string;
   email: string;
   address: string;
+  tier: 10 | 25 | 50 | 100;
   numDucks: number;
   amountPaid: number;
   paymentMethod: 'cash' | 'check' | 'venmo' | 'paypal' | 'other';
@@ -34,6 +35,11 @@ const PurchaseSchema = new Schema<IPurchase>({
     type: String,
     required: [true, 'Address is required'],
     trim: true,
+  },
+  tier: {
+    type: Number,
+    required: [true, 'Tier is required'],
+    enum: [10, 25, 50, 100],
   },
   numDucks: {
     type: Number,
