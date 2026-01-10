@@ -1,11 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PWARegister from "@/components/PWARegister";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Toyne-Britton Memorial Scholarship - Duck Race Fundraiser",
@@ -35,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased min-h-screen flex flex-col bg-haynes-100`}>
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-haynes-100">
         <PWARegister />
         <Header />
         <main className="flex-grow">
