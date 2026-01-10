@@ -21,33 +21,29 @@ export async function POST(request: NextRequest) {
     await dbConnect();
     const body = await request.json();
 
-    const { buyerName, phone, email, address, numDucks, paymentMethod, notes, tierPrice } = body;
+    const { buyerName, phone, email, address, tier, numDucks, paymentMethod, notes } = body;
 
-    if (!buyerName || !phone || !email || !address || !numDucks || !paymentMethod) {
+    if (!buyerName || !phone || !email || !address || !tier || !numDucks || !paymentMethod) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    if (numDucks < 1 || numDucks > 100) {
+    // Validate tier
+    const validTiers = [10, 25, 50, 100];
+    if (!validTiers.includes(tier)) {
       return NextResponse.json(
-        { error: 'Number of ducks must be between 1 and 100' },
+        { error: 'Invalid tier. Must be 10, 25, 50, or 100' },
         { status: 400 }
       );
     }
 
-    const highestDuck = await Purchase.findOne({})
-      .sort({ 'duckNumbers': -1 })
-      .select('duckNumbers');
+    // Get the highest duck number for THIS tier only (each tier has separate numbering)
+    const allPurchasesInTier = await Purchase.find({ tier }).select('duckNumbers');
+    const allDuckNumbers = allPurchasesInTier.flatMap(p => p.duckNumbers);
 
     let nextDuckNumber = 1;
-    if (highestDuck && highestDuck.duckNumbers.length > 0) {
-      nextDuckNumber = Math.max(...highestDuck.duckNumbers) + 1;
-    }
-
-    const allPurchases = await Purchase.find({}).select('duckNumbers');
-    const allDuckNumbers = allPurchases.flatMap(p => p.duckNumbers);
     if (allDuckNumbers.length > 0) {
       nextDuckNumber = Math.max(...allDuckNumbers) + 1;
     }
@@ -57,14 +53,15 @@ export async function POST(request: NextRequest) {
       duckNumbers.push(nextDuckNumber + i);
     }
 
-    // Use tierPrice if provided, otherwise calculate based on duck count
-    const amountPaid = tierPrice || numDucks * 25;
+    // Calculate amount (tier price × number of ducks)
+    const amountPaid = tier * numDucks;
 
     const purchase = new Purchase({
       buyerName,
       phone,
       email,
       address,
+      tier,
       numDucks,
       amountPaid,
       paymentMethod,
@@ -77,6 +74,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      tier,
       duckNumbers: purchase.duckNumbers,
       amountPaid: purchase.amountPaid,
       purchaseId: purchase._id,

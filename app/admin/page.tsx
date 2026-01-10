@@ -9,6 +9,7 @@ interface Purchase {
   phone: string;
   email: string;
   address: string;
+  tier: number;
   numDucks: number;
   amountPaid: number;
   paymentMethod: string;
@@ -17,11 +18,26 @@ interface Purchase {
   duckNumbers: number[];
 }
 
+interface PotStats {
+  ducks: number;
+  total: number;
+  winnerPot: number;
+  scholarshipPot: number;
+}
+
 interface Stats {
   totalDucks: number;
   totalAmount: number;
   totalPurchases: number;
+  pots: Record<number, PotStats>;
 }
+
+const TIERS = [
+  { price: 10, payout: 30, color: 'bg-amber-600' },
+  { price: 25, payout: 35, color: 'bg-emerald-600' },
+  { price: 50, payout: 40, color: 'bg-blue-600' },
+  { price: 100, payout: 50, color: 'bg-purple-600' },
+];
 
 export default function AdminPage() {
   const router = useRouter();
@@ -82,12 +98,13 @@ export default function AdminPage() {
   };
 
   const exportCSV = () => {
-    const headers = ['Name', 'Phone', 'Email', 'Address', 'Ducks', 'Amount', 'Payment', 'Date', 'Duck Numbers', 'Notes'];
+    const headers = ['Name', 'Phone', 'Email', 'Address', 'Race Tier', 'Ducks', 'Amount', 'Payment', 'Date', 'Duck Numbers', 'Notes'];
     const rows = purchases.map(p => [
       p.buyerName,
       p.phone,
       p.email,
       p.address,
+      `$${p.tier}`,
       p.numDucks.toString(),
       p.amountPaid.toString(),
       p.paymentMethod,
@@ -122,8 +139,11 @@ export default function AdminPage() {
     });
   };
 
-  const winnerPot = stats.totalAmount / 2;
-  const scholarshipPot = stats.totalAmount / 2;
+  // Calculate total scholarship fund across all pots
+  const totalScholarship = TIERS.reduce((sum, tier) => {
+    const pot = stats.pots?.[tier.price];
+    return sum + (pot?.scholarshipPot || 0);
+  }, 0);
 
   if (loading || !authenticated) {
     return (
@@ -171,7 +191,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Summary Stats */}
       <div className="grid md:grid-cols-4 gap-6 no-print">
         <div className="card">
           <div className="flex items-center gap-3">
@@ -196,7 +216,7 @@ export default function AdminPage() {
             </div>
             <div>
               <div className="text-2xl font-bold">{stats.totalDucks}</div>
-              <div className="text-sm text-[var(--muted)]">Ducks Sold</div>
+              <div className="text-sm text-[var(--muted)]">Total Ducks</div>
             </div>
           </div>
         </div>
@@ -209,8 +229,8 @@ export default function AdminPage() {
               </svg>
             </div>
             <div>
-              <div className="text-2xl font-bold">${winnerPot.toLocaleString()}</div>
-              <div className="text-sm text-[var(--muted)]">Winner&apos;s Pot</div>
+              <div className="text-2xl font-bold">${stats.totalAmount.toLocaleString()}</div>
+              <div className="text-sm text-[var(--muted)]">Total Collected</div>
             </div>
           </div>
         </div>
@@ -223,10 +243,29 @@ export default function AdminPage() {
               </svg>
             </div>
             <div>
-              <div className="text-2xl font-bold">${scholarshipPot.toLocaleString()}</div>
+              <div className="text-2xl font-bold">${totalScholarship.toLocaleString()}</div>
               <div className="text-sm text-[var(--muted)]">Scholarship Fund</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* 4 Race Pots */}
+      <div className="no-print">
+        <h2 className="text-xl font-bold text-[var(--primary)] mb-4">4 Race Pots - 4 Winners</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {TIERS.map(tier => {
+            const pot = stats.pots?.[tier.price] || { ducks: 0, total: 0, winnerPot: 0, scholarshipPot: 0 };
+            return (
+              <div key={tier.price} className={`${tier.color} text-white rounded-xl p-5 text-center`}>
+                <div className="text-xl font-bold mb-1">${tier.price} Race</div>
+                <div className="text-3xl font-bold my-2">${pot.winnerPot}</div>
+                <div className="text-sm opacity-80">Winner takes {tier.payout}%</div>
+                <div className="text-sm mt-2 opacity-90">{pot.ducks} ducks</div>
+                <div className="text-xs mt-1 opacity-70">${pot.scholarshipPot} to scholarship</div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -245,6 +284,7 @@ export default function AdminPage() {
               <tr className="border-b border-[var(--border)]">
                 <th className="text-left py-3 px-2 font-medium">Name</th>
                 <th className="text-left py-3 px-2 font-medium">Contact</th>
+                <th className="text-left py-3 px-2 font-medium">Race</th>
                 <th className="text-left py-3 px-2 font-medium">Ducks</th>
                 <th className="text-left py-3 px-2 font-medium">Amount</th>
                 <th className="text-left py-3 px-2 font-medium">Payment</th>
@@ -255,47 +295,55 @@ export default function AdminPage() {
             <tbody>
               {purchases.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-[var(--muted)]">
+                  <td colSpan={8} className="text-center py-8 text-[var(--muted)]">
                     No orders yet
                   </td>
                 </tr>
               ) : (
-                purchases.map(purchase => (
-                  <tr key={purchase._id} className="border-b border-[var(--border)] hover:bg-[var(--background)]">
-                    <td className="py-3 px-2">
-                      <div className="font-medium">{purchase.buyerName}</div>
-                      <div className="text-xs text-[var(--muted)] truncate max-w-[150px]">{purchase.address}</div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <div>{purchase.phone}</div>
-                      <div className="text-xs text-[var(--muted)]">{purchase.email}</div>
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="font-medium">{purchase.numDucks}</div>
-                      <div className="text-xs text-[var(--muted)]">
-                        #{purchase.duckNumbers.slice(0, 3).join(', ')}
-                        {purchase.duckNumbers.length > 3 && '...'}
-                      </div>
-                    </td>
-                    <td className="py-3 px-2 font-medium">${purchase.amountPaid}</td>
-                    <td className="py-3 px-2">
-                      <span className="capitalize px-2 py-1 bg-[var(--background)] rounded text-xs">
-                        {purchase.paymentMethod}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2 text-[var(--muted)]">
-                      {formatDate(purchase.purchaseDate)}
-                    </td>
-                    <td className="py-3 px-2">
-                      <button
-                        onClick={() => setSelectedPurchase(purchase)}
-                        className="text-[var(--primary)] hover:underline text-sm"
-                      >
-                        View Receipt
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                purchases.map(purchase => {
+                  const tierInfo = TIERS.find(t => t.price === purchase.tier);
+                  return (
+                    <tr key={purchase._id} className="border-b border-[var(--border)] hover:bg-[var(--background)]">
+                      <td className="py-3 px-2">
+                        <div className="font-medium">{purchase.buyerName}</div>
+                        <div className="text-xs text-[var(--muted)] truncate max-w-[150px]">{purchase.address}</div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div>{purchase.phone}</div>
+                        <div className="text-xs text-[var(--muted)]">{purchase.email}</div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <span className={`${tierInfo?.color || 'bg-gray-500'} text-white px-2 py-1 rounded text-xs font-medium`}>
+                          ${purchase.tier}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="font-medium">{purchase.numDucks}</div>
+                        <div className="text-xs text-[var(--muted)]">
+                          #{purchase.duckNumbers.slice(0, 3).join(', ')}
+                          {purchase.duckNumbers.length > 3 && '...'}
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 font-medium">${purchase.amountPaid}</td>
+                      <td className="py-3 px-2">
+                        <span className="capitalize px-2 py-1 bg-[var(--background)] rounded text-xs">
+                          {purchase.paymentMethod}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 text-[var(--muted)]">
+                        {formatDate(purchase.purchaseDate)}
+                      </td>
+                      <td className="py-3 px-2">
+                        <button
+                          onClick={() => setSelectedPurchase(purchase)}
+                          className="text-[var(--primary)] hover:underline text-sm"
+                        >
+                          View Receipt
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -332,6 +380,12 @@ export default function AdminPage() {
                   <span className="text-right max-w-[200px]">{selectedPurchase.address}</span>
                 </div>
                 <div className="border-t border-[var(--border)] pt-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-[var(--muted)]">Race:</span>
+                    <span className={`${TIERS.find(t => t.price === selectedPurchase.tier)?.color || 'bg-gray-500'} text-white px-3 py-1 rounded font-bold`}>
+                      ${selectedPurchase.tier} Race
+                    </span>
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-[var(--muted)]">Ducks Purchased:</span>
                     <span className="font-bold">{selectedPurchase.numDucks}</span>
@@ -350,10 +404,10 @@ export default function AdminPage() {
                   </div>
                 </div>
                 <div className="border-t border-[var(--border)] pt-3">
-                  <p className="text-[var(--muted)] mb-2">Duck Numbers:</p>
+                  <p className="text-[var(--muted)] mb-2">${selectedPurchase.tier} Race Duck Numbers:</p>
                   <div className="flex flex-wrap gap-2">
                     {selectedPurchase.duckNumbers.map(num => (
-                      <span key={num} className="bg-[var(--primary)] text-white px-3 py-1 rounded-full text-sm font-bold">
+                      <span key={num} className={`${TIERS.find(t => t.price === selectedPurchase.tier)?.color || 'bg-[var(--primary)]'} text-white px-3 py-1 rounded-full text-sm font-bold`}>
                         #{num}
                       </span>
                     ))}
@@ -412,6 +466,7 @@ export default function AdminPage() {
             </div>
 
             <div className="border-t-2 border-black pt-4 mb-6">
+              <p><strong>Race:</strong> ${selectedPurchase.tier} Race</p>
               <p><strong>Ducks Purchased:</strong> {selectedPurchase.numDucks}</p>
               <p><strong>Amount Paid:</strong> ${selectedPurchase.amountPaid}</p>
               <p><strong>Payment Method:</strong> {selectedPurchase.paymentMethod}</p>
@@ -419,7 +474,7 @@ export default function AdminPage() {
             </div>
 
             <div className="border-t-2 border-black pt-4 mb-6">
-              <p className="font-bold mb-2">Duck Numbers:</p>
+              <p className="font-bold mb-2">${selectedPurchase.tier} Race Duck Numbers:</p>
               <p>{selectedPurchase.duckNumbers.map(n => `#${n}`).join(', ')}</p>
             </div>
 
