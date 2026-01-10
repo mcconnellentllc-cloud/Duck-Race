@@ -2,9 +2,9 @@ import bcrypt from 'bcryptjs';
 
 // Admin users - passwords are hashed versions of 'buckaduck'
 const ADMIN_USERS = [
-  { username: 'Jan', name: 'Jan Toyne', passwordHash: '$2b$10$dfJc07fJ0xk11VgskoDneO8t.s7cXfu5xKiw5ijKGosFrCcGAe/1i' },
-  { username: 'Vance', name: 'Vance McCormick', passwordHash: '$2b$10$dfJc07fJ0xk11VgskoDneO8t.s7cXfu5xKiw5ijKGosFrCcGAe/1i' },
-  { username: 'Kyle', name: 'Kyle McConnell', passwordHash: '$2b$10$dfJc07fJ0xk11VgskoDneO8t.s7cXfu5xKiw5ijKGosFrCcGAe/1i' },
+  { username: 'Jan', name: 'Jan Toyne', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
+  { username: 'Vance', name: 'Vance McCormick', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
+  { username: 'Kyle', name: 'Kyle McConnell', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
 ];
 
 export interface AdminUser {
