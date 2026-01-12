@@ -4,7 +4,30 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Britton-Toyne Memorial Duck Race",
-  description: "Support the Cameron Britton and Jason Toyne Memorial Scholarship Fund - community involvement and being there when needed.",
+  description: "Support the Cameron Britton and Jason Toyne Memorial Scholarship Fund - 4 races, 4 winners! Buy a duck for $10, $25, $50, or $100 and help support local scholarships.",
+  metadataBase: new URL('https://duck-race-teal.vercel.app'),
+  openGraph: {
+    title: "Britton-Toyne Memorial Duck Race",
+    description: "Support the Cameron Britton and Jason Toyne Memorial Scholarship Fund - 4 races, 4 winners! Buy a duck and help support local scholarships.",
+    url: 'https://duck-race-teal.vercel.app',
+    siteName: 'Britton-Toyne Memorial Duck Race',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Britton-Toyne Memorial Duck Race - Support Local Scholarships',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Britton-Toyne Memorial Duck Race",
+    description: "Support the Cameron Britton and Jason Toyne Memorial Scholarship Fund - 4 races, 4 winners!",
+    images: ['/og-image.jpg'],
+  },
 };
 
 export default function RootLayout({
