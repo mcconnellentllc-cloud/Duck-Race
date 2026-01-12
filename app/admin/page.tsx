@@ -42,7 +42,7 @@ const TIERS = [
 export default function AdminPage() {
   const router = useRouter();
   const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [stats, setStats] = useState<Stats>({ totalDucks: 0, totalAmount: 0, totalPurchases: 0 });
+  const [stats, setStats] = useState<Stats>({ totalDucks: 0, totalAmount: 0, totalPurchases: 0, pots: {} });
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const [adminUser, setAdminUser] = useState('');
