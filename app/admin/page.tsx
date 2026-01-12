@@ -519,6 +519,48 @@ export default function AdminPage() {
         </div>
       </div>
 
+      {/* Contestants by Race */}
+      <div className="no-print">
+        <h2 className="text-xl font-bold text-[var(--primary)] mb-4">Contestants by Race</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          {TIERS.map(tier => {
+            const tierPurchases = purchases.filter(p => p.tier === tier.price);
+            const totalDucks = tierPurchases.reduce((sum, p) => sum + p.numDucks, 0);
+            return (
+              <div key={tier.price} className="card">
+                <div className={`${tier.color} text-white px-4 py-2 rounded-t-lg -mx-6 -mt-6 mb-4`}>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-lg">${tier.price} Race</span>
+                    <span className="text-sm opacity-90">{tierPurchases.length} contestants &bull; {totalDucks} ducks</span>
+                  </div>
+                </div>
+                {tierPurchases.length === 0 ? (
+                  <p className="text-[var(--muted)] text-center py-4">No contestants yet</p>
+                ) : (
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {tierPurchases.map(purchase => (
+                      <div key={purchase._id} className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                        <div>
+                          <div className="font-medium">{purchase.buyerName}</div>
+                          <div className="text-xs text-[var(--muted)]">{purchase.phone}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-medium">{purchase.numDucks} duck{purchase.numDucks > 1 ? 's' : ''}</div>
+                          <div className="text-xs text-[var(--muted)]">
+                            #{purchase.duckNumbers.slice(0, 3).join(', ')}
+                            {purchase.duckNumbers.length > 3 && `... +${purchase.duckNumbers.length - 3}`}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Orders Table */}
       <div className="card no-print">
         <h2 className="text-xl font-bold text-[var(--primary)] mb-4 flex items-center gap-2">
