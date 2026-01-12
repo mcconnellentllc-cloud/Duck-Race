@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function JasonPage() {
   return (
@@ -15,7 +16,20 @@ export default function JasonPage() {
       <section className="py-12 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="card">
-            <h2 className="text-2xl font-bold text-[var(--primary)] mb-6">
+            {/* Photo */}
+            <div className="flex justify-center mb-8">
+              <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-[var(--secondary)] shadow-lg">
+                <Image
+                  src="/jason.jpg"
+                  alt="Jason Toyne"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold text-[var(--primary)] mb-6 text-center">
               Farmer, Beekeeper, Cattleman, Fire Chief
             </h2>
 
