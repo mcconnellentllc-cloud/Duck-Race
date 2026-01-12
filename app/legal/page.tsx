@@ -182,17 +182,21 @@ export default function LegalPage() {
           {/* Distribution of Proceeds */}
           <div className="card">
             <h2 className="text-2xl font-bold text-[var(--primary)] mb-4">
-              Distribution of Proceeds
+              4 Separate Races - 4 Winners
             </h2>
             <p className="mb-4">
-              Proceeds from this duck race are distributed based on the tier purchased:
+              This duck race consists of 4 separate races, each with its own pot and winner:
             </p>
             <ul className="list-disc list-inside space-y-2 mb-4">
-              <li>Bronze tier ($10): 30% to winner, 70% to scholarship fund</li>
-              <li>Silver tier ($25): 35% to winner, 65% to scholarship fund</li>
-              <li>Gold tier ($50): 40% to winner, 60% to scholarship fund</li>
-              <li>Platinum tier ($100): 50% to winner, 50% to scholarship fund</li>
+              <li><strong>$10 Race:</strong> $10 per duck entry, 30% of pot to winner, 70% to scholarship</li>
+              <li><strong>$25 Race:</strong> $25 per duck entry, 35% of pot to winner, 65% to scholarship</li>
+              <li><strong>$50 Race:</strong> $50 per duck entry, 40% of pot to winner, 60% to scholarship</li>
+              <li><strong>$100 Race:</strong> $100 per duck entry, 50% of pot to winner, 50% to scholarship</li>
             </ul>
+            <p className="text-[var(--muted)] mb-2">
+              Each entry is for 1 duck in that specific race. If you purchase a $10 duck, you are only
+              eligible to win from the $10 race pot.
+            </p>
             <p className="text-[var(--muted)]">
               Scholarship funds support education and community service initiatives in honor
               of Cameron Britton and Jason Toyne.

@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 
-// Admin users - passwords are hashed versions of 'buckaduck'
+// Admin users - passwords are hashed versions of 'duckduckgo'
 const ADMIN_USERS = [
-  { username: 'Jan', name: 'Jan Toyne', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
-  { username: 'Vance', name: 'Vance McCormick', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
-  { username: 'Kyle', name: 'Kyle McConnell', passwordHash: '$2b$10$7Dh32JpPhDlHrDjJ2fKLb.Vjt0EWVLzVm9Ubcr1G96xvPYf5YWKzO' },
+  { username: 'Jan', name: 'Jan Toyne', passwordHash: '$2b$10$.NS5DYnefpf3yXi2u2Sd9O/uYhiceA2vnsYwwd2Hj1VyxzIxCRjde' },
+  { username: 'Vance', name: 'Vance McCormick', passwordHash: '$2b$10$.NS5DYnefpf3yXi2u2Sd9O/uYhiceA2vnsYwwd2Hj1VyxzIxCRjde' },
+  { username: 'Kyle', name: 'Kyle McConnell', passwordHash: '$2b$10$.NS5DYnefpf3yXi2u2Sd9O/uYhiceA2vnsYwwd2Hj1VyxzIxCRjde' },
 ];
 
 export interface AdminUser {

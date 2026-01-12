@@ -32,7 +32,7 @@ export default function BuyPage() {
     phone: '',
     email: '',
     address: '',
-    paymentMethod: 'cash',
+    paymentMethod: 'venmo',
     notes: '',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -153,7 +153,7 @@ export default function BuyPage() {
                     phone: '',
                     email: '',
                     address: '',
-                    paymentMethod: 'cash',
+                    paymentMethod: 'venmo',
                     notes: '',
                   });
                 }}
@@ -279,11 +279,9 @@ export default function BuyPage() {
                 <div>
                   <label htmlFor="paymentMethod" className="block font-medium mb-2">Payment Method *</label>
                   <select id="paymentMethod" name="paymentMethod" value={formData.paymentMethod} onChange={handleChange} required className="input-field">
-                    <option value="cash">Cash</option>
-                    <option value="check">Check</option>
                     <option value="venmo">Venmo</option>
                     <option value="paypal">PayPal</option>
-                    <option value="other">Other</option>
+                    <option value="other">Other Online Payment</option>
                   </select>
                 </div>
 
@@ -303,6 +301,33 @@ export default function BuyPage() {
           {!selectedTier && (
             <p className="text-center text-[var(--muted)]">Select a race above to continue</p>
           )}
+        </div>
+      </section>
+
+      {/* Cash/Check Payment Info */}
+      <section className="py-8 px-6 bg-[var(--background)]">
+        <div className="max-w-2xl mx-auto">
+          <div className="card border-2 border-[var(--primary)]">
+            <h3 className="text-xl font-bold text-[var(--primary)] mb-4">Paying by Cash or Check?</h3>
+            <p className="text-[var(--muted)] mb-4">
+              Cash and check payments are processed by our team. Please contact one of our administrators to register your ducks.
+            </p>
+            <div className="bg-[var(--background)] rounded-lg p-4 mb-4">
+              <p className="font-semibold mb-2">To pay by check:</p>
+              <p className="text-[var(--foreground)]">
+                Make checks payable to: <strong>Britton Toyne Memorial Scholarship</strong>
+              </p>
+              <p className="text-[var(--foreground)] mt-2">
+                Mail to:<br />
+                <strong>Jan Toyne</strong><br />
+                PO Box 1<br />
+                Sedgwick, CO
+              </p>
+            </div>
+            <p className="text-sm text-[var(--muted)]">
+              Please include your name, phone number, email, and which race(s) you want to enter with your check.
+            </p>
+          </div>
         </div>
       </section>
     </div>
