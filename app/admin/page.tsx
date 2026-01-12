@@ -49,6 +49,22 @@ export default function AdminPage() {
   const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
 
+  // New purchase form state
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
+  const [newPurchase, setNewPurchase] = useState({
+    buyerName: '',
+    phone: '',
+    email: '',
+    address: '',
+    tier: 10,
+    numDucks: 1,
+    paymentMethod: 'cash',
+    notes: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState<{ duckNumbers: number[]; amountPaid: number } | null>(null);
+
   useEffect(() => {
     checkAuth();
   }, []);
@@ -139,6 +155,51 @@ export default function AdminPage() {
     });
   };
 
+  const handleNewPurchaseChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewPurchase(prev => ({ ...prev, [name]: name === 'tier' || name === 'numDucks' ? parseInt(value) : value }));
+  };
+
+  const handleSubmitPurchase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(null);
+
+    try {
+      const res = await fetch('/api/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPurchase),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to record purchase');
+      }
+
+      setSubmitSuccess({ duckNumbers: data.duckNumbers, amountPaid: data.amountPaid });
+      // Reset form
+      setNewPurchase({
+        buyerName: '',
+        phone: '',
+        email: '',
+        address: '',
+        tier: 10,
+        numDucks: 1,
+        paymentMethod: 'cash',
+        notes: '',
+      });
+      // Refresh data
+      fetchData();
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to record purchase');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Calculate total scholarship fund across all pots
   const totalScholarship = TIERS.reduce((sum, tier) => {
     const pot = stats.pots?.[tier.price];
@@ -161,6 +222,15 @@ export default function AdminPage() {
           <p className="text-sm text-[var(--muted)]">Welcome, {adminUser}</p>
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={() => { setShowPurchaseForm(!showPurchaseForm); setSubmitSuccess(null); setSubmitError(''); }}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Record Purchase
+          </button>
           <button
             onClick={fetchData}
             className="flex items-center gap-2 px-4 py-2 border border-[var(--border)] rounded-lg hover:bg-[var(--background)] transition-colors"
@@ -190,6 +260,186 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+
+      {/* Record Purchase Form */}
+      {showPurchaseForm && (
+        <div className="card no-print">
+          <h2 className="text-xl font-bold text-[var(--primary)] mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Record New Purchase
+          </h2>
+
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">{submitError}</div>
+          )}
+
+          {submitSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
+              <p className="font-bold">Purchase Recorded Successfully!</p>
+              <p>Amount: ${submitSuccess.amountPaid}</p>
+              <p>Duck Numbers: {submitSuccess.duckNumbers.map(n => `#${n}`).join(', ')}</p>
+              <button
+                onClick={() => setSubmitSuccess(null)}
+                className="mt-2 text-sm underline"
+              >
+                Record Another
+              </button>
+            </div>
+          )}
+
+          {!submitSuccess && (
+            <form onSubmit={handleSubmitPurchase} className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="buyerName" className="block font-medium mb-1 text-sm">Contestant Name *</label>
+                  <input
+                    type="text"
+                    id="buyerName"
+                    name="buyerName"
+                    value={newPurchase.buyerName}
+                    onChange={handleNewPurchaseChange}
+                    required
+                    className="input-field"
+                    placeholder="Full name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block font-medium mb-1 text-sm">Phone *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={newPurchase.phone}
+                    onChange={handleNewPurchaseChange}
+                    required
+                    className="input-field"
+                    placeholder="Phone number"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="email" className="block font-medium mb-1 text-sm">Email *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={newPurchase.email}
+                    onChange={handleNewPurchaseChange}
+                    required
+                    className="input-field"
+                    placeholder="Email address"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="address" className="block font-medium mb-1 text-sm">Address</label>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    value={newPurchase.address}
+                    onChange={handleNewPurchaseChange}
+                    className="input-field"
+                    placeholder="Address (optional)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="tier" className="block font-medium mb-1 text-sm">Race Tier *</label>
+                  <select
+                    id="tier"
+                    name="tier"
+                    value={newPurchase.tier}
+                    onChange={handleNewPurchaseChange}
+                    required
+                    className="input-field"
+                  >
+                    {TIERS.map(tier => (
+                      <option key={tier.price} value={tier.price}>
+                        ${tier.price} Race ({tier.payout}% payout)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="numDucks" className="block font-medium mb-1 text-sm">Quantity *</label>
+                  <input
+                    type="number"
+                    id="numDucks"
+                    name="numDucks"
+                    value={newPurchase.numDucks}
+                    onChange={handleNewPurchaseChange}
+                    min="1"
+                    max="100"
+                    required
+                    className="input-field"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="paymentMethod" className="block font-medium mb-1 text-sm">Payment Method</label>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    value={newPurchase.paymentMethod}
+                    onChange={handleNewPurchaseChange}
+                    className="input-field"
+                  >
+                    <option value="cash">Cash</option>
+                    <option value="check">Check</option>
+                    <option value="venmo">Venmo</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block font-medium mb-1 text-sm">Notes</label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={newPurchase.notes}
+                  onChange={handleNewPurchaseChange}
+                  className="input-field"
+                  rows={2}
+                  placeholder="Optional notes..."
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                <div className="text-lg">
+                  <span className="text-[var(--muted)]">Total:</span>{' '}
+                  <span className="font-bold text-[var(--primary)]">${newPurchase.tier * newPurchase.numDucks}</span>
+                  <span className="text-sm text-[var(--muted)] ml-2">
+                    ({newPurchase.numDucks} × ${newPurchase.tier})
+                  </span>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowPurchaseForm(false)}
+                    className="px-4 py-2 border border-[var(--border)] rounded-lg hover:bg-[var(--background)]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {submitting ? 'Recording...' : 'Record Purchase'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
+      )}
 
       {/* Summary Stats */}
       <div className="grid md:grid-cols-4 gap-6 no-print">
