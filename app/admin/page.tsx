@@ -64,6 +64,7 @@ export default function AdminPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState<{ duckNumbers: number[]; amountPaid: number } | null>(null);
+  const [selectedRace, setSelectedRace] = useState<number | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -502,12 +503,16 @@ export default function AdminPage() {
 
       {/* 4 Race Pots */}
       <div className="no-print">
-        <h2 className="text-xl font-bold text-[var(--primary)] mb-4">4 Race Pots - 4 Winners</h2>
+        <h2 className="text-xl font-bold text-[var(--primary)] mb-4">4 Race Pots - 4 Winners <span className="text-sm font-normal text-[var(--muted)]">(click to view contestants)</span></h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {TIERS.map(tier => {
             const pot = stats.pots?.[tier.price] || { ducks: 0, total: 0, winnerPot: 0, scholarshipPot: 0 };
             return (
-              <div key={tier.price} className={`${tier.color} text-white rounded-xl p-5 text-center`}>
+              <div
+                key={tier.price}
+                onClick={() => setSelectedRace(tier.price)}
+                className={`${tier.color} text-white rounded-xl p-5 text-center cursor-pointer hover:opacity-90 hover:scale-105 transition-all shadow-lg`}
+              >
                 <div className="text-xl font-bold mb-1">${tier.price} Race</div>
                 <div className="text-3xl font-bold my-2">${pot.winnerPot}</div>
                 <div className="text-sm opacity-80">Winner takes {tier.payout}%</div>
@@ -780,6 +785,99 @@ export default function AdminPage() {
               <p>Thank you for supporting the scholarship fund!</p>
               <p className="text-sm mt-2">Giving young people the strength and courage to face the world</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Race Detail Modal */}
+      {selectedRace && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 no-print">
+          <div className="bg-white rounded-lg max-w-4xl w-full m-4 max-h-[90vh] overflow-hidden flex flex-col">
+            {(() => {
+              const tierInfo = TIERS.find(t => t.price === selectedRace);
+              const racePurchases = purchases.filter(p => p.tier === selectedRace);
+              const totalDucks = racePurchases.reduce((sum, p) => sum + p.numDucks, 0);
+              const pot = stats.pots?.[selectedRace] || { ducks: 0, total: 0, winnerPot: 0, scholarshipPot: 0 };
+
+              return (
+                <>
+                  <div className={`${tierInfo?.color || 'bg-gray-500'} text-white px-6 py-4`}>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h2 className="text-2xl font-bold">${selectedRace} Race - All Contestants</h2>
+                        <p className="opacity-90">{racePurchases.length} contestants &bull; {totalDucks} ducks &bull; Winner gets ${pot.winnerPot} ({tierInfo?.payout}%)</p>
+                      </div>
+                      <button
+                        onClick={() => setSelectedRace(null)}
+                        className="text-white hover:bg-white/20 p-2 rounded"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="overflow-y-auto flex-1 p-6">
+                    {racePurchases.length === 0 ? (
+                      <p className="text-center text-[var(--muted)] py-8">No contestants in this race yet</p>
+                    ) : (
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b-2 border-[var(--border)]">
+                            <th className="text-left py-3 px-2 font-bold">Name</th>
+                            <th className="text-left py-3 px-2 font-bold">Phone</th>
+                            <th className="text-left py-3 px-2 font-bold">Email</th>
+                            <th className="text-left py-3 px-2 font-bold">Address</th>
+                            <th className="text-left py-3 px-2 font-bold">Ducks</th>
+                            <th className="text-left py-3 px-2 font-bold">Duck Numbers</th>
+                            <th className="text-left py-3 px-2 font-bold">Payment</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {racePurchases.map(purchase => (
+                            <tr key={purchase._id} className="border-b border-[var(--border)] hover:bg-[var(--background)]">
+                              <td className="py-3 px-2 font-medium">{purchase.buyerName}</td>
+                              <td className="py-3 px-2">{purchase.phone}</td>
+                              <td className="py-3 px-2 text-sm">{purchase.email}</td>
+                              <td className="py-3 px-2 text-sm max-w-[150px] truncate">{purchase.address || '-'}</td>
+                              <td className="py-3 px-2 font-bold">{purchase.numDucks}</td>
+                              <td className="py-3 px-2">
+                                <div className="flex flex-wrap gap-1">
+                                  {purchase.duckNumbers.map(num => (
+                                    <span key={num} className={`${tierInfo?.color || 'bg-gray-500'} text-white px-2 py-0.5 rounded text-xs font-medium`}>
+                                      #{num}
+                                    </span>
+                                  ))}
+                                </div>
+                              </td>
+                              <td className="py-3 px-2 capitalize">{purchase.paymentMethod}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr className="border-t-2 border-[var(--border)] bg-[var(--background)]">
+                            <td colSpan={4} className="py-3 px-2 font-bold">Total</td>
+                            <td className="py-3 px-2 font-bold">{totalDucks}</td>
+                            <td className="py-3 px-2 font-bold">${pot.total} collected</td>
+                            <td className="py-3 px-2"></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    )}
+                  </div>
+
+                  <div className="border-t border-[var(--border)] px-6 py-4 flex justify-end">
+                    <button
+                      onClick={() => setSelectedRace(null)}
+                      className="px-6 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-light)]"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
